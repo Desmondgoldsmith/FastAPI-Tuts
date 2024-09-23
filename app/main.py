@@ -15,7 +15,7 @@ class validatePosts(BaseModel):
     rating:Optional[int] = None
     
 try:
-    conn = psycopg.connect(host = 'localhost',database = 'fastapi',user = 'postgres',password = 'DessyAdmin07', cursor_factory=dict_row)
+    conn = psycopg.connect(host = 'localhost',dbname = 'FastAPI_DB',user = 'postgres',password = 'DessyAdmin', port='5432', row_factory=dict_row)
     cursor = conn.cursor()
     print("Database connection successfull")
 except Exception as error:
