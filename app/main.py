@@ -3,6 +3,8 @@ from fastapi.params import Body
 from typing import Optional
 from pydantic import BaseModel
 from random import randrange
+import psycopg
+from psycopg.rows import dict_row
 
 app = FastAPI()
 
@@ -12,6 +14,13 @@ class validatePosts(BaseModel):
     published: bool = True
     rating:Optional[int] = None
     
+try:
+    conn = psycopg.connect(host = 'localhost',database = 'fastapi',user = 'postgres',password = 'DessyAdmin07', cursor_factory=dict_row)
+    cursor = conn.cursor()
+    print("Database connection successfull")
+except Exception as error:
+    print(f"An error Occured:{error}")
+
 all_posts = [
     {
         "id": 1,
