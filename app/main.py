@@ -90,12 +90,12 @@ def create_post(posts:validatePosts):
 # retrieve one post
 @app.get('/post/{id}')
 def get_one_post(id:int, response:Response):
-    find_post = SearchPost(id) 
+    cursor.execute('SELECT * FROM public."Posts" WHERE id = %s',(id,))
+    find_post = cursor.fetchone()
     if not find_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
         # response.status_code = status.HTTP_404_NOT_FOUND
         # return {"message": f"Post with id {id} not found"}    
-    print(find_post)
     return {
            "status": "Post retrieved successfully",
            "body": find_post
