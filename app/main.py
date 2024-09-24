@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from random import randrange
 import psycopg
 from psycopg.rows import dict_row
+import time
 
 app = FastAPI()
 
@@ -14,12 +15,27 @@ class validatePosts(BaseModel):
     published: bool = True
     rating:Optional[int] = None
     
-try:
-    conn = psycopg.connect(host = 'localhost',dbname = 'FastAPI_DB',user = 'postgres',password = 'DessyAdmin', port='5432', row_factory=dict_row)
-    cursor = conn.cursor()
-    print("Database connection successfull")
-except Exception as error:
-    print(f"An error Occured:{error}")
+
+connection_successful = False
+
+while not connection_successful:
+    try:
+        conn = psycopg.connect(
+            host='localhost',
+            dbname='FastAPI_DB',
+            user='postgres',
+            password='DessyAdmin',
+            port='5432',
+            row_factory=dict_row
+        )
+        cursor = conn.cursor()
+        print("Database connection successful")
+        connection_successful = True
+    except Exception as error:
+        print(f"An error occurred: {error}")
+        print("Retrying in 2 seconds...")
+        time.sleep(2)
+
 
 all_posts = [
     {
@@ -55,7 +71,9 @@ async def root():
 
 @app.get("/posts")
 def posts():
-    return {
+     cursor.execute('SELECT * FROM public."Posts"')
+     all_Posts = cursor.fetchall()
+     return {
             "status":"all posts retrieved successfully!",
             "body": all_posts,
            }
