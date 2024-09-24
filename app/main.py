@@ -73,7 +73,7 @@ def posts():
      all_Posts = cursor.fetchall()
      return {
             "status":"all posts retrieved successfully!",
-            "body": all_posts,
+            "body": all_Posts,
            }
 
 # create a post
@@ -104,12 +104,12 @@ def get_one_post(id:int, response:Response):
 # delete a post
 @app.delete('/delete_post/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def deletePost(id:int):
-    index = findIndex(id)
-    
-    if index == None:
+    cursor.execute('DELETE FROM public."Posts" WHERE id = %s RETURNING *',(id,))
+    deleted = cursor.fetchone()  
+    conn.commit() 
+    if deleted == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
     
-    all_posts.pop(index)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
     
 # update a post
