@@ -12,8 +12,6 @@ app = FastAPI()
 class validatePosts(BaseModel):
     title: str
     content: str
-    published: bool = True
-    rating:Optional[int] = None
     
 
 connection_successful = False
@@ -81,12 +79,12 @@ def posts():
 # create a post
 @app.post("/create-post", status_code=status.HTTP_201_CREATED)
 def create_post(posts:validatePosts):
-    post_dict = posts.model_dump()
-    post_dict['id'] = randrange(1,1000000000)
-    all_posts.append(post_dict)
+    cursor.execute('INSERT INTO public."Posts" (title,content) VALUES(%s,%s) RETURNING *', (posts.title, posts.content))
+    post_added = cursor.fetchone()
+    conn.commit()
     return {
             "status":"post created successfully",
-            "data": post_dict
+            "data": post_added
            }
 
 # retrieve one post
