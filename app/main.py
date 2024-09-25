@@ -7,6 +7,8 @@ import psycopg
 from psycopg.rows import dict_row
 import time
 
+models.Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 
 class validatePosts(BaseModel):
