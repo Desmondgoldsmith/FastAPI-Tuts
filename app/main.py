@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Response,status, HTTPException
+from fastapi import FastAPI, Response,status, HTTPException, Depends
 from pydantic import BaseModel
 import psycopg
 from psycopg.rows import dict_row
 from sqlalchemy.orm import Session
-from .database import SessionLocal, engine, get_db
+from .database import engine, get_db
 from . import models
 import time
 
@@ -37,22 +37,6 @@ while not connection_successful:
         time.sleep(2)
 
 
-all_posts = [
-    {
-        "id": 1,
-        "title": "Forbes Update",
-        "content": "Dessy is the World Richest Man!",
-        "rating": 5
-    },
-    {
-        "id": 2,
-        "title": "News Updates",
-        "content": "Dessy bought a private Jet worth $50m!",
-        "rating": 5
-    }
-]
-
-
 # function to search post by id
 def SearchPost(id):
     for p in all_posts:
@@ -69,15 +53,25 @@ def findIndex(id):
 async def root():
     return {"Message: Hello world!"}
 
-@app.get("/posts")
-def posts():
-     cursor.execute('SELECT * FROM public."Posts"')
-     all_Posts = cursor.fetchall()
-     return {
-            "status":"all posts retrieved successfully!",
-            "body": all_Posts,
-           }
+# ======== USING NORMAL SQL QUERIES TO GET ALL POSTS ========== 
+# @app.get("/posts")
+# def posts():
+#      cursor.execute('SELECT * FROM public."Posts"')
+#      all_Posts = cursor.fetchall()
+#      return {
+#             "status":"all posts retrieved successfully!",
+#             "body": all_Posts,
+#            }
 
+# ======== USING AN ORM TO GET ALL POSTS ===============
+@app.get("/posts")
+def GetPosts(db:Session = Depends(get_db)):
+    data = db.query(models.Post).all()
+    return {
+             "status": "success!",
+             "data": data
+           }
+    
 # create a post
 @app.post("/create-post", status_code=status.HTTP_201_CREATED)
 def create_post(posts:validatePosts):
