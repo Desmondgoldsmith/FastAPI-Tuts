@@ -115,14 +115,12 @@ def deletePost(id:int):
 # update a post
 @app.put('/update_post/{id}', status_code=status.HTTP_201_CREATED)
 def updatePost(id:int, posts:validatePosts):
-    index = findIndex(id)
-    
-    if index == None:
+    cursor.execute('UPDATE public."Posts" SET title = %s, content = %s WHERE id = %s RETURNING *', (posts.title,posts.content,id,))
+    updated_post =cursor.fetchone()
+    conn.commit()
+    if updated_post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
-    post_dict = posts.model_dump()
-    post_dict['id'] = id
-    all_posts[index] = post_dict
     return {
             "status":"Post Updated Successfully",
-            "body": post_dict  
+            "body": updated_post  
           }
