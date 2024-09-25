@@ -2,6 +2,7 @@ from fastapi import FastAPI, Response,status, HTTPException
 from pydantic import BaseModel
 import psycopg
 from psycopg.rows import dict_row
+from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, get_db
 from . import models
 import time
