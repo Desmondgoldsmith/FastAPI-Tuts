@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from random import randrange
 import psycopg
 from psycopg.rows import dict_row
+from .database import SessionLocal, engine
+from . import models
 import time
 
 models.Base.metadata.create_all(bind=engine)
