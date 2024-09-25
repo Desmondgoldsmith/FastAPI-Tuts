@@ -1,11 +1,8 @@
 from fastapi import FastAPI, Response,status, HTTPException
-from fastapi.params import Body
-from typing import Optional
 from pydantic import BaseModel
-from random import randrange
 import psycopg
 from psycopg.rows import dict_row
-from .database import SessionLocal, engine
+from .database import SessionLocal, engine, get_db
 from . import models
 import time
 
