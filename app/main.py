@@ -81,7 +81,8 @@ def create_post(posts:validatePosts, db:Session = Depends(get_db)):
     # conn.commit()
     
     # ===== USING THE SQLAlchemy ORM =====
-    data = models.Posts(title = posts.title, content = posts.content, published = posts.published)
+    # data = models.Posts(title = posts.title, content = posts.content, published = posts.published)
+    data = models.Posts(**posts.model_dump())
     db.add(data)
     db.commit()
     db.refresh(data)
@@ -92,9 +93,11 @@ def create_post(posts:validatePosts, db:Session = Depends(get_db)):
 
 # retrieve one post
 @app.get('/post/{id}')
-def get_one_post(id:int, response:Response):
-    cursor.execute('SELECT * FROM public."Posts" WHERE id = %s',(id,))
-    find_post = cursor.fetchone()
+def get_one_post(id:int, response:Response, db: Session = Depends(get_db)):
+    # cursor.execute('SELECT * FROM public."Posts" WHERE id = %s',(id,))
+    # find_post = cursor.fetchone()
+    
+    find_post = db.query(models.Posts).filter(models.Posts.id == id).first()
     if not find_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
         # response.status_code = status.HTTP_404_NOT_FOUND
