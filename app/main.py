@@ -66,7 +66,7 @@ async def root():
 # ======== USING AN ORM TO GET ALL POSTS ===============
 @app.get("/posts")
 def GetPosts(db:Session = Depends(get_db)):
-    data = db.query(models.Post).all()
+    data = db.query(models.Posts).all()
     return {
              "status": "success!",
              "data": data
