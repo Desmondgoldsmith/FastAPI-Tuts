@@ -16,7 +16,6 @@ class validatePosts(BaseModel):
     content: str
     published: bool
     
-
 connection_successful = False
 
 while not connection_successful:
