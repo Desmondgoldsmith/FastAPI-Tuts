@@ -14,6 +14,7 @@ app = FastAPI()
 class validatePosts(BaseModel):
     title: str
     content: str
+    published: bool
     
 
 connection_successful = False
@@ -38,16 +39,16 @@ while not connection_successful:
 
 
 # function to search post by id
-def SearchPost(id):
-    for p in all_posts:
-        if p['id'] == id:
-            return p
+# def SearchPost(id):
+#     for p in all_posts:
+#         if p['id'] == id:
+#             return p
         
 # function to get the index of a post
-def findIndex(id):
-    for i,p in enumerate(all_posts):
-        if p['id'] == id:
-            return i
+# def findIndex(id):
+#     for i,p in enumerate(all_posts):
+#         if p['id'] == id:
+#             return i
 
 @app.get("/")
 async def root():
@@ -74,13 +75,20 @@ def GetPosts(db:Session = Depends(get_db)):
     
 # create a post
 @app.post("/create-post", status_code=status.HTTP_201_CREATED)
-def create_post(posts:validatePosts):
-    cursor.execute('INSERT INTO public."Posts" (title,content) VALUES(%s,%s) RETURNING *', (posts.title, posts.content))
-    post_added = cursor.fetchone()
-    conn.commit()
+def create_post(posts:validatePosts, db:Session = Depends(get_db)):
+    # ===== USING NOWMAL SQL STATEMENTS =====
+    # cursor.execute('INSERT INTO public."Posts" (title,content) VALUES(%s,%s) RETURNING *', (posts.title, posts.content))
+    # post_added = cursor.fetchone()
+    # conn.commit()
+    
+    # ===== USING THE SQLAlchemy ORM =====
+    data = models.Posts(title = posts.title, content = posts.content, published = posts.published)
+    db.add(data)
+    db.commit()
+    db.refresh(data)
     return {
             "status":"post created successfully",
-            "data": post_added
+            "data": data
            }
 
 # retrieve one post
