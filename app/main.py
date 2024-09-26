@@ -109,13 +109,15 @@ def get_one_post(id:int, response:Response, db: Session = Depends(get_db)):
     
 # delete a post
 @app.delete('/delete_post/{id}', status_code=status.HTTP_204_NO_CONTENT)
-def deletePost(id:int):
-    cursor.execute('DELETE FROM public."Posts" WHERE id = %s RETURNING *',(id,))
-    deleted = cursor.fetchone()  
-    conn.commit() 
-    if deleted == None:
+def deletePost(id:int, db:Session = Depends(get_db)):
+    # cursor.execute('DELETE FROM public."Posts" WHERE id = %s RETURNING *',(id,))
+    # deleted = cursor.fetchone()  
+    # conn.commit() 
+    deleted = db.query(models.Posts).filter(models.Posts.id == id)
+    if deleted.first() == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
-    
+    deleted.delete(synchronize_session = False)
+    db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
     
 # update a post
