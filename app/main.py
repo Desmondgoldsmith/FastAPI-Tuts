@@ -126,7 +126,7 @@ def updatePost(id:int, posts:validatePosts, db: Session = Depends(get_db)):
     # cursor.execute('UPDATE public."Posts" SET title = %s, content = %s WHERE id = %s RETURNING *', (posts.title,posts.content,id,))
     # updated_post =cursor.fetchone()
     # conn.commit()
-    updated_post = db.query(models.Posts).filter(models.Posts == id)
+    updated_post = db.query(models.Posts).filter(models.Posts.id == id)
     post  = updated_post.first()
     if post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
