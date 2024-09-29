@@ -7,11 +7,8 @@ class validatePosts(BaseModel):
     published: bool
     
     
-class Post(BaseModel):
+class Post(validatePosts):
     id: int
-    title: str
-    content: str
-    published: bool
     created_at: datetime 
     
     class config:

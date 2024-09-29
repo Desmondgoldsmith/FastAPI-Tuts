@@ -67,7 +67,7 @@ def GetPosts(db:Session = Depends(get_db)):
            }
     
 # create a post
-@app.post("/create-post", status_code=status.HTTP_201_CREATED)
+@app.post("/create-post", status_code=status.HTTP_201_CREATED, response_model = schema.Post)
 def create_post(posts:schema.validatePosts, db:Session = Depends(get_db)):
     # ===== USING NOWMAL SQL STATEMENTS =====
     # cursor.execute('INSERT INTO public."Posts" (title,content) VALUES(%s,%s) RETURNING *', (posts.title, posts.content))
@@ -86,7 +86,7 @@ def create_post(posts:schema.validatePosts, db:Session = Depends(get_db)):
            }
 
 # retrieve one post
-@app.get('/post/{id}')
+@app.get('/post/{id}', response_model = schema.Post)
 def get_one_post(id:int, response:Response, db: Session = Depends(get_db)):
     # cursor.execute('SELECT * FROM public."Posts" WHERE id = %s',(id,))
     # find_post = cursor.fetchone()
@@ -102,7 +102,7 @@ def get_one_post(id:int, response:Response, db: Session = Depends(get_db)):
            } 
     
 # delete a post
-@app.delete('/delete_post/{id}', status_code=status.HTTP_204_NO_CONTENT)
+@app.delete('/delete_post/{id}', status_code=status.HTTP_204_NO_CONTENT, response_model = schema.Post)
 def deletePost(id:int, db:Session = Depends(get_db)):
     # cursor.execute('DELETE FROM public."Posts" WHERE id = %s RETURNING *',(id,))
     # deleted = cursor.fetchone()  
@@ -115,7 +115,7 @@ def deletePost(id:int, db:Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
     
 # update a post
-@app.put('/update_post/{id}', status_code=status.HTTP_201_CREATED)
+@app.put('/update_post/{id}', status_code=status.HTTP_201_CREATED, response_model = schema.Post)
 def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db)):
     # cursor.execute('UPDATE public."Posts" SET title = %s, content = %s WHERE id = %s RETURNING *', (posts.title,posts.content,id,))
     # updated_post =cursor.fetchone()
