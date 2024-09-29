@@ -1,20 +1,14 @@
 from fastapi import FastAPI, Response,status, HTTPException, Depends
-from pydantic import BaseModel
 import psycopg
 from psycopg.rows import dict_row
 from sqlalchemy.orm import Session
 from .database import engine, get_db
-from . import models
+from . import models, schema
 import time
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
-class validatePosts(BaseModel):
-    title: str
-    content: str
-    published: bool
     
 connection_successful = False
 
@@ -74,7 +68,7 @@ def GetPosts(db:Session = Depends(get_db)):
     
 # create a post
 @app.post("/create-post", status_code=status.HTTP_201_CREATED)
-def create_post(posts:validatePosts, db:Session = Depends(get_db)):
+def create_post(posts:schema.validatePosts, db:Session = Depends(get_db)):
     # ===== USING NOWMAL SQL STATEMENTS =====
     # cursor.execute('INSERT INTO public."Posts" (title,content) VALUES(%s,%s) RETURNING *', (posts.title, posts.content))
     # post_added = cursor.fetchone()
@@ -122,17 +116,27 @@ def deletePost(id:int, db:Session = Depends(get_db)):
     
 # update a post
 @app.put('/update_post/{id}', status_code=status.HTTP_201_CREATED)
-def updatePost(id:int, posts:validatePosts, db: Session = Depends(get_db)):
+def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db)):
     # cursor.execute('UPDATE public."Posts" SET title = %s, content = %s WHERE id = %s RETURNING *', (posts.title,posts.content,id,))
     # updated_post =cursor.fetchone()
     # conn.commit()
-    updated_post = db.query(models.Posts).filter(models.Posts.id == id)
-    post  = updated_post.first()
-    if post == None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
-    updated_post.update(posts.model_dump(), synchronize_session = False)
+    # Query the post
+    post_query = db.query(models.Posts).filter(models.Posts.id == id)
+    post = post_query.first()
+
+    # Check if the post exists
+    if post is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
+                            detail=f"Post with id {id} not found")
+
+    # Update the post
+    post_query.update(posts.model_dump(), synchronize_session=False)
     db.commit()
+
+    # Refresh the post to get the updated data
+    db.refresh(post)
+
     return {
-            "status":"Post Updated Successfully",
-            "body": updated_post.first()  
-          }
+        "status": "Post Updated Successfully",
+        "body": post
+    }
