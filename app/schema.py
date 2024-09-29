@@ -10,6 +10,5 @@ class validatePosts(BaseModel):
 class Post(validatePosts):
     id: int
     created_at: datetime 
-    
-    class config:
-        orm_model = True
+    class Config:
+        orm_mode = True

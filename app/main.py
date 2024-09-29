@@ -4,6 +4,7 @@ from psycopg.rows import dict_row
 from sqlalchemy.orm import Session
 from .database import engine, get_db
 from . import models, schema
+from typing import List
 import time
 
 models.Base.metadata.create_all(bind=engine)
@@ -58,13 +59,10 @@ async def root():
 #            }
 
 # ======== USING AN ORM TO GET ALL POSTS ===============
-@app.get("/posts")
+@app.get("/posts", response_model=List[schema.Post])
 def GetPosts(db:Session = Depends(get_db)):
     data = db.query(models.Posts).all()
-    return {
-             "status": "success!",
-             "data": data
-           }
+    return data
     
 # create a post
 @app.post("/create-post", status_code=status.HTTP_201_CREATED, response_model = schema.Post)
@@ -80,10 +78,8 @@ def create_post(posts:schema.validatePosts, db:Session = Depends(get_db)):
     db.add(data)
     db.commit()
     db.refresh(data)
-    return {
-            "status":"post created successfully",
-            "data": data
-           }
+    return data
+           
 
 # retrieve one post
 @app.get('/post/{id}', response_model = schema.Post)
@@ -96,13 +92,11 @@ def get_one_post(id:int, response:Response, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
         # response.status_code = status.HTTP_404_NOT_FOUND
         # return {"message": f"Post with id {id} not found"}    
-    return {
-           "status": "Post retrieved successfully",
-           "body": find_post
-           } 
+    return find_post
+            
     
 # delete a post
-@app.delete('/delete_post/{id}', status_code=status.HTTP_204_NO_CONTENT, response_model = schema.Post)
+@app.delete('/delete_post/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def deletePost(id:int, db:Session = Depends(get_db)):
     # cursor.execute('DELETE FROM public."Posts" WHERE id = %s RETURNING *',(id,))
     # deleted = cursor.fetchone()  
@@ -136,7 +130,4 @@ def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db))
     # Refresh the post to get the updated data
     db.refresh(post)
 
-    return {
-        "status": "Post Updated Successfully",
-        "body": post
-    }
+    return post
