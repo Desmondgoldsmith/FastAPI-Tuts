@@ -139,6 +139,10 @@ def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db))
 # add a user
 @app.post('/create_user', status_code=status.HTTP_201_CREATED, response_model=schema.UsersResponse)
 def addUser(users:schema.UserSchema, db: Session = Depends(get_db)):
+    # hash user password
+    password_hash = pwd_context.hash(users.password)
+    users.password = password_hash
+    
     user_data = models.Users(**users.model_dump())
     db.add(user_data)
     db.commit()
