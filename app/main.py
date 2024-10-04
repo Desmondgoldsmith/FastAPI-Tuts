@@ -131,3 +131,10 @@ def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db))
     db.refresh(post)
 
     return post
+
+
+# add a user
+@app.post('/create_user', status_code=status.HTTP_201_CREATED, response_model=schema.UsersResponse)
+def addUser(users:schema.UserSchema, db: Session = Depends(get_db)):
+    user_data = models.Users(**users.model_dump())
+    return user_data

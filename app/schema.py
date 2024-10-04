@@ -14,7 +14,7 @@ class Post(validatePosts):
     class Config:
         orm_mode = True
         
-class Users(BaseModel):
+class UserSchema(BaseModel):
     email: str
     password: str
     
