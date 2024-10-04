@@ -3,13 +3,11 @@ import psycopg
 from psycopg.rows import dict_row
 from sqlalchemy.orm import Session
 from .database import engine, get_db
-from passlib.context import CryptContext
-from . import models, schema
+from . import models, schema, utils
 from typing import List
 import time
 
 models.Base.metadata.create_all(bind=engine)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 app = FastAPI()
@@ -140,7 +138,7 @@ def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db))
 @app.post('/create_user', status_code=status.HTTP_201_CREATED, response_model=schema.UsersResponse)
 def addUser(users:schema.UserSchema, db: Session = Depends(get_db)):
     # hash user password
-    password_hash = pwd_context.hash(users.password)
+    password_hash = utils.Hash(users.password)
     users.password = password_hash
     
     user_data = models.Users(**users.model_dump())
