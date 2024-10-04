@@ -3,11 +3,14 @@ import psycopg
 from psycopg.rows import dict_row
 from sqlalchemy.orm import Session
 from .database import engine, get_db
+from passlib.context import CryptContext
 from . import models, schema
 from typing import List
 import time
 
 models.Base.metadata.create_all(bind=engine)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 app = FastAPI()
     
