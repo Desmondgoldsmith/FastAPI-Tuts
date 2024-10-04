@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
 
@@ -15,9 +15,13 @@ class Post(validatePosts):
         from_attributes = True
         
 class UserSchema(BaseModel):
-    email: str
+    email: EmailStr
     password: str
     
 class UsersResponse(UserSchema):
     id: int
     created_at: datetime
+    
+    # converty response to dictionary
+    class Config:
+        from_attributes = True 
