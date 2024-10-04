@@ -12,12 +12,12 @@ class Post(validatePosts):
     id: int
     created_at: datetime 
     class Config:
-        orm_mode = True
+        from_attributes = True
         
 class UserSchema(BaseModel):
     email: str
     password: str
     
-class UsersResponse(Users):
+class UsersResponse(UserSchema):
     id: int
     created_at: datetime
