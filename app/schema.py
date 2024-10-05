@@ -20,6 +20,7 @@ class UserSchema(BaseModel):
     
 class UsersResponse(UserSchema):
     id: int
+    email: str
     created_at: datetime
     
     # converty response to dictionary

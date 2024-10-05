@@ -149,7 +149,10 @@ def addUser(users:schema.UserSchema, db: Session = Depends(get_db)):
 
 
 # get user
-@app.get('/user/{id}')
-def getUser(id:schema.UserSchema, db:Session = Depends(get_db)):
+@app.get('/user/{id}', response_model= schema.UsersResponse)
+def getUser(id:int, db:Session = Depends(get_db)):
     user = db.query(models.Users).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
     
+    return user
