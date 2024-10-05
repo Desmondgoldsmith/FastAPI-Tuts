@@ -1,11 +1,8 @@
-from fastapi import FastAPI, Response,status, HTTPException, Depends
-import psycopg
-from psycopg.rows import dict_row
+from fastapi import Response,status, HTTPException, Depends
 from sqlalchemy.orm import Session
-from .database import engine, get_db
-from . import models, schema, utils
+from ..database import get_db
+from . import models, schema
 from typing import List
-import time
 
 
 # ======== USING NORMAL SQL QUERIES TO GET ALL POSTS ========== 
