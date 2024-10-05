@@ -146,3 +146,9 @@ def addUser(users:schema.UserSchema, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user_data)
     return user_data
+
+
+# get user
+@app.get('/user/{id}')
+def getUser(id:schema.UserSchema, db:Session = Depends(get_db)):
+    
