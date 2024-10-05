@@ -1,12 +1,13 @@
-from fastapi import Response,status, HTTPException, Depends, APIRouter
+from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from ..database import get_db
-from . import models, schema
+from . import models, schema, utils
 from typing import List
 
 
 # initializing the router
 router = APIRouter()
+
 # add a user
 @router.post('/create_user', status_code=status.HTTP_201_CREATED, response_model=schema.UsersResponse)
 def addUser(users:schema.UserSchema, db: Session = Depends(get_db)):
