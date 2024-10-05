@@ -52,6 +52,6 @@ async def root():
 app.include_router(posts.router)
 
 # user endpoint routes
-app.include_router(posts.router)
+app.include_router(users.router)
 
 
