@@ -1,12 +1,15 @@
-from fastapi import Response,status, HTTPException, Depends
+from fastapi import Response,status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from ..database import get_db
 from . import models, schema
 from typing import List
 
 
+
+router = APIRouter()
+
 # ======== USING NORMAL SQL QUERIES TO GET ALL POSTS ========== 
-# @app.get("/posts")
+# @router.get("/posts")
 # def posts():
 #      cursor.execute('SELECT * FROM public."Posts"')
 #      all_Posts = cursor.fetchall()
@@ -16,13 +19,13 @@ from typing import List
 #            }
 
 # ======== USING AN ORM TO GET ALL POSTS ===============
-@app.get("/posts", response_model=List[schema.Post])
+@router.get("/posts", response_model=List[schema.Post])
 def GetPosts(db:Session = Depends(get_db)):
     data = db.query(models.Posts).all()
     return data
     
 # create a post
-@app.post("/create-post", status_code=status.HTTP_201_CREATED, response_model = schema.Post)
+@router.post("/create-post", status_code=status.HTTP_201_CREATED, response_model = schema.Post)
 def create_post(posts:schema.validatePosts, db:Session = Depends(get_db)):
     # ===== USING NOWMAL SQL STATEMENTS =====
     # cursor.execute('INSERT INTO public."Posts" (title,content) VALUES(%s,%s) RETURNING *', (posts.title, posts.content))
@@ -39,7 +42,7 @@ def create_post(posts:schema.validatePosts, db:Session = Depends(get_db)):
            
 
 # retrieve one post
-@app.get('/post/{id}', response_model = schema.Post)
+@router.get('/post/{id}', response_model = schema.Post)
 def get_one_post(id:int, response:Response, db: Session = Depends(get_db)):
     # cursor.execute('SELECT * FROM public."Posts" WHERE id = %s',(id,))
     # find_post = cursor.fetchone()
@@ -53,7 +56,7 @@ def get_one_post(id:int, response:Response, db: Session = Depends(get_db)):
             
     
 # delete a post
-@app.delete('/delete_post/{id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/delete_post/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def deletePost(id:int, db:Session = Depends(get_db)):
     # cursor.execute('DELETE FROM public."Posts" WHERE id = %s RETURNING *',(id,))
     # deleted = cursor.fetchone()  
@@ -66,7 +69,7 @@ def deletePost(id:int, db:Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
     
 # update a post
-@app.put('/update_post/{id}', status_code=status.HTTP_201_CREATED, response_model = schema.Post)
+@router.put('/update_post/{id}', status_code=status.HTTP_201_CREATED, response_model = schema.Post)
 def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db)):
     # cursor.execute('UPDATE public."Posts" SET title = %s, content = %s WHERE id = %s RETURNING *', (posts.title,posts.content,id,))
     # updated_post =cursor.fetchone()
