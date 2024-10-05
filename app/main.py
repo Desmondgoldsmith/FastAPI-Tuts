@@ -1,10 +1,9 @@
-from fastapi import FastAPI, Response,status, HTTPException, Depends
+from fastapi import FastAPI
 import psycopg
 from psycopg.rows import dict_row
-from sqlalchemy.orm import Session
-from .database import engine, get_db
-from . import models, schema, utils
-from typing import List
+from .database import engine
+from . import models
+from .routers import posts,users
 import time
 
 models.Base.metadata.create_all(bind=engine)
