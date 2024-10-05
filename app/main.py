@@ -48,5 +48,10 @@ while not connection_successful:
 async def root():
     return {"Message: Hello world!"}
 
+# post endpoint routes
+app.include_router(posts.router)
+
+# user endpoint routes
+app.include_router(posts.router)
 
 
