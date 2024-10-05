@@ -151,4 +151,5 @@ def addUser(users:schema.UserSchema, db: Session = Depends(get_db)):
 # get user
 @app.get('/user/{id}')
 def getUser(id:schema.UserSchema, db:Session = Depends(get_db)):
+    user = db.query(models.Users).filter(models.User.id == id).first()
     
