@@ -6,7 +6,10 @@ from typing import List
 
 
 
-router = APIRouter()
+router = APIRouter(
+    # this is how we can add a prefix in FastApi
+    prefix = "/posts"
+)
 
 # ======== USING NORMAL SQL QUERIES TO GET ALL POSTS ========== 
 # @router.get("/posts")
