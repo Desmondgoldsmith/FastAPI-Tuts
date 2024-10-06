@@ -8,7 +8,7 @@ from typing import List
 # initializing the router
 router = APIRouter(
     # set the title of the section rendering the Users api details on the Api docs page to Users
-    tag = "Users"
+    tag = ['Users']
 )
 
 # add a user
