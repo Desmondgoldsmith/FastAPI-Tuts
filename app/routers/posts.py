@@ -22,7 +22,8 @@ router = APIRouter(
 #            }
 
 # ======== USING AN ORM TO GET ALL POSTS ===============
-@router.get("/posts", response_model=List[schema.Post])
+# instead of 
+@router.get("/", response_model=List[schema.Post])
 def GetPosts(db:Session = Depends(get_db)):
     data = db.query(models.Posts).all()
     return data
