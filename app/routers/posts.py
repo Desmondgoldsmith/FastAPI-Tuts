@@ -8,7 +8,8 @@ from typing import List
 
 router = APIRouter(
     # this is how we can add a prefix in FastApi
-    prefix = "/posts"
+    prefix = "/posts",
+    tag = "Posts"
 )
 
 # ======== USING NORMAL SQL QUERIES TO GET ALL POSTS ========== 
