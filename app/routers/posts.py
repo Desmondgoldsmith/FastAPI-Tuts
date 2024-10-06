@@ -22,7 +22,7 @@ router = APIRouter(
 #            }
 
 # ======== USING AN ORM TO GET ALL POSTS ===============
-# instead of 
+# instead of making the route /posts , we use a / because we already set the prefix
 @router.get("/", response_model=List[schema.Post])
 def GetPosts(db:Session = Depends(get_db)):
     data = db.query(models.Posts).all()
