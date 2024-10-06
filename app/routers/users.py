@@ -6,7 +6,9 @@ from typing import List
 
 
 # initializing the router
-router = APIRouter()
+router = APIRouter(
+    tag = "Users"
+)
 
 # add a user
 @router.post('/create_user', status_code=status.HTTP_201_CREATED, response_model=schema.UsersResponse)
