@@ -10,6 +10,11 @@ router = APIRouter(
 
 
 @router.post('/login')
-def LoginUser(db: Session = Depends(get_db)):
+def LoginUser(userDetails:schema.LoginAuth, db: Session = Depends(get_db)):
+    authUser = db.query(models.Users).filter(models.Users.email == userDetails.email).first()
     
+    if not authUser:
+       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, details = f"user with this email {userDetails.email} not found") 
+   
+   
     return "something"

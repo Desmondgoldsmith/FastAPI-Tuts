@@ -26,3 +26,9 @@ class UsersResponse(UserSchema):
     # converty response to dictionary
     class Config:
         from_attributes = True 
+        
+    
+class LoginSchema(BaseModel):
+    email: EmailStr
+    password: str
+    
