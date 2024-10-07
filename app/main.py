@@ -3,7 +3,7 @@ import psycopg
 from psycopg.rows import dict_row
 from .database import engine
 from . import models
-from .routers import posts,users
+from .routers import posts,users,auth
 import time
 
 models.Base.metadata.create_all(bind=engine)
@@ -53,5 +53,8 @@ app.include_router(posts.router)
 
 # user endpoint routes
 app.include_router(users.router)
+
+# auth endpoint routes
+app.include_router(auth.router)
 
 

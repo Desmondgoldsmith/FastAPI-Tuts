@@ -1,11 +1,6 @@
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
-
 import jwt
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jwt.exceptions import InvalidTokenError
-from passlib.context import CryptContext
+
 
 
 
@@ -14,7 +9,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
