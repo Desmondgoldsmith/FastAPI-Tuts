@@ -12,12 +12,12 @@ router = APIRouter(
 
 @router.post('/login')
 def LoginUser(userDetails:OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    authUser = db.query(models.Users).filter(models.Users.email == userDetails.email).first()
+    authUser = db.query(models.Users).filter(models.Users.email == userDetails.username).first()
     
     if not authUser:
-       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, details = f"user with this email {userDetails.email} not found") 
+       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, details = f"user with this email {userDetails.username} not found") 
    
     # create access token for the user
-    access_token = oAuth.create_access_token(data = {"userID": userDetails.id})
+    access_token = oAuth.create_access_token(data = {"userID": userDetails.username})
    
     return {"token":access_token, "type": "bearer"}
