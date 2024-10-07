@@ -17,10 +17,10 @@ def LoginUser(userDetails:OAuth2PasswordRequestForm = Depends(), db: Session = D
     if not authUser:
        raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, details = f"user with this email {userDetails.username} not found") 
    
-    if not utils.verify_password(authUser.password,userDetails.password):
+    if not utils.verify_password(userDetails.password,authUser.password):
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, details = f"wrong user password")
    
     # create access token for the user
-    access_token = oAuth.create_access_token(data = {"userID": userDetails.username})
+    access_token = oAuth.create_access_token(data = {"userID": authUser.id})
    
     return {"token":access_token, "type": "bearer"}
