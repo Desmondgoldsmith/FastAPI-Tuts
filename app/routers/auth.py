@@ -5,7 +5,7 @@ from .. import models, schema, oAuth
 from typing import List
 
 router = APIRouter(
-    tag = ['Auth']
+    tags = ['Auth']
 )
 
 
