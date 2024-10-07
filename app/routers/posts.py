@@ -1,7 +1,7 @@
 from fastapi import Response,status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from ..database import get_db
-from .. import models, schema
+from .. import models, schema, oAuth
 from typing import List
 
 
@@ -31,7 +31,10 @@ def GetPosts(db:Session = Depends(get_db)):
     
 # create a post
 @router.post("/create-post", status_code=status.HTTP_201_CREATED, response_model = schema.Post)
-def create_post(posts:schema.validatePosts, db:Session = Depends(get_db)):
+def create_post(posts:schema.validatePosts, db:Session = Depends(get_db), 
+                # to make sure users are loggedIn before they can create a post
+                userID:int = Depends(oAuth.getCurrentUser)):
+    
     # ===== USING NOWMAL SQL STATEMENTS =====
     # cursor.execute('INSERT INTO public."Posts" (title,content) VALUES(%s,%s) RETURNING *', (posts.title, posts.content))
     # post_added = cursor.fetchone()
