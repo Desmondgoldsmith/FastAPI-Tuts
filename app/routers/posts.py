@@ -25,9 +25,11 @@ router = APIRouter(
 # ======== USING AN ORM TO GET ALL POSTS ===============
 # instead of making the route /posts , we use a / because we already set the prefix
 @router.get("/posts", response_model=List[schema.Post])
-def GetPosts(db:Session = Depends(get_db), userID:int = Depends(oAuth.getCurrentUser)):
+def GetPosts(db:Session = Depends(get_db), user:int = Depends(oAuth.getCurrentUser)):
     data = db.query(models.Posts).all()
+    # print(user.email)
     return data
+    
     
 # create a post
 @router.post("/create-post", status_code=status.HTTP_201_CREATED, response_model = schema.Post)
