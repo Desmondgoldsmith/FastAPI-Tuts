@@ -32,7 +32,7 @@ def verify_access_token(token,credential_exception):
         id: str = payload.get("userID")
         if id is None:
             raise credential_exception
-        token_data = schema.TokenData(id=id)
+        token_data = schema.TokenData(id=str(id))
     except InvalidTokenError:
         raise credential_exception
     return token_data
