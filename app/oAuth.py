@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from .database import get_db
 from jwt.exceptions import InvalidTokenError
 from fastapi.security import OAuth2PasswordBearer
-from . import schema
+from . import schema,models
 import jwt
 
 
@@ -48,6 +48,7 @@ def getCurrentUser(token:str = Depends(oauth2_scheme), db:Session = Depends(get_
         
     )
     token = verify_access_token(token,credential_exception)
-    user = db.query(models.Users)
-    return 
+    user = db.query(models.Users).filter(models.Users.id == token.id)
+    
+    return user
 
