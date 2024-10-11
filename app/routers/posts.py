@@ -44,7 +44,7 @@ def create_post(posts:schema.validatePosts, db:Session = Depends(get_db),
     
     # ===== USING THE SQLAlchemy ORM =====
     # data = models.Posts(title = posts.title, content = posts.content, published = posts.published)
-    data = models.Posts(**posts.model_dump())
+    data = models.Posts(ownerID = userID.id, **posts.model_dump())
     db.add(data)
     db.commit()
     db.refresh(data)

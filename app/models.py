@@ -12,7 +12,7 @@ class Posts(Base):
     content = Column(String , nullable = False)
     published = Column(Boolean, server_default = 'True', nullable=False)
     created_at = Column(TIMESTAMP(timezone = True), nullable = True , server_default =  text('now()')) 
-    userID = Column(Integer,ForeignKey('users.id', ondelete = "CASCADE"), nullable = False)
+    ownerID = Column(Integer,ForeignKey('users.id', ondelete = "CASCADE"), nullable = False)
 
 class Users(Base):
     __tablename__= 'users'

@@ -11,6 +11,7 @@ class validatePosts(BaseModel):
     
 class Post(validatePosts):
     id: int
+    ownerID: int
     created_at: datetime 
     class Config:
         from_attributes = True
