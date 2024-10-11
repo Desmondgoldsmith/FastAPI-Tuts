@@ -80,7 +80,7 @@ def deletePost(id:int, db:Session = Depends(get_db)):
     
 # update a post
 @router.put('/update_post/{id}', status_code=status.HTTP_201_CREATED, response_model = schema.Post)
-def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db)):
+def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db), userID:int = Depends(oAuth.getCurrentUser)):
     # cursor.execute('UPDATE public."Posts" SET title = %s, content = %s WHERE id = %s RETURNING *', (posts.title,posts.content,id,))
     # updated_post =cursor.fetchone()
     # conn.commit()
@@ -93,6 +93,11 @@ def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                             detail=f"Post with id {id} not found")
 
+    # allowing users to only update posts which they created
+    if post.ownerID != oAuth.getCurrentUser.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
+                            detail=f"Post with id {id} not found")
+        
     # Update the post
     post_query.update(posts.model_dump(), synchronize_session=False)
     db.commit()
