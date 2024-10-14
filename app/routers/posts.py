@@ -26,7 +26,7 @@ router = APIRouter(
 # instead of making the route /posts , we use a / because we already set the prefix
 @router.get("/posts", response_model=List[schema.Post])
 def GetPosts(db:Session = Depends(get_db), user:int = Depends(oAuth.getCurrentUser)):
-    data = db.query(models.Posts).all()
+    data = db.query(models.Posts).filter(models.Posts.ownerID == user.id).all()
     # print(user.email)
     return data
     
@@ -53,7 +53,7 @@ def create_post(posts:schema.validatePosts, db:Session = Depends(get_db),
 
 # retrieve one post
 @router.get('/post/{id}', response_model = schema.Post)
-def get_one_post(id:int, response:Response, db: Session = Depends(get_db)):
+def get_one_post(id:int, response:Response, db: Session = Depends(get_db), userID:int = Depends(oAuth.getCurrentUser)):
     # cursor.execute('SELECT * FROM public."Posts" WHERE id = %s',(id,))
     # find_post = cursor.fetchone()
     
@@ -67,14 +67,21 @@ def get_one_post(id:int, response:Response, db: Session = Depends(get_db)):
     
 # delete a post
 @router.delete('/delete_post/{id}', status_code=status.HTTP_204_NO_CONTENT)
-def deletePost(id:int, db:Session = Depends(get_db)):
+def deletePost(id:int, db:Session = Depends(get_db), userID:int = Depends(oAuth.getCurrentUser)):
     # cursor.execute('DELETE FROM public."Posts" WHERE id = %s RETURNING *',(id,))
     # deleted = cursor.fetchone()  
     # conn.commit() 
-    deleted = db.query(models.Posts).filter(models.Posts.id == id)
+    deleted_query = db.query(models.Posts).filter(models.Posts.id == id)
+    deleted = deleted_query.first()
     if deleted.first() == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
-    deleted.delete(synchronize_session = False)
+    
+    # allowing users to only delete posts which they created
+    if deleted.ownerID != userID.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
+                            detail=f" You are unauthorised to delete this post")
+    
+    deleted_query.delete(synchronize_session = False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
     
@@ -94,9 +101,9 @@ def updatePost(id:int, posts:schema.validatePosts, db:Session = Depends(get_db),
                             detail=f"Post with id {id} not found")
 
     # allowing users to only update posts which they created
-    if post.ownerID != oAuth.getCurrentUser.id:
+    if post.ownerID != userID.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
-                            detail=f"Post with id {id} not found")
+                            detail=f" You are unauthorised to update this post")
         
     # Update the post
     post_query.update(posts.model_dump(), synchronize_session=False)
