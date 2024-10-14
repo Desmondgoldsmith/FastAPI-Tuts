@@ -9,12 +9,7 @@ class validatePosts(BaseModel):
     published: bool
     
     
-class Post(validatePosts):
-    id: int
-    ownerID: int
-    created_at: datetime 
-    class Config:
-        from_attributes = True
+
         
 class UserSchema(BaseModel):
     email: EmailStr
@@ -28,6 +23,14 @@ class UsersResponse(UserSchema):
     # converty response to dictionary
     class Config:
         from_attributes = True 
+        
+class Post(validatePosts):
+    id: int
+    ownerID: int
+    created_at: datetime 
+    user: UsersResponse
+    class Config:
+        from_attributes = True
         
     
 class LoginSchema(BaseModel):

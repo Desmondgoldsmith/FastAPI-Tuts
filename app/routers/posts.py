@@ -26,7 +26,7 @@ router = APIRouter(
 # instead of making the route /posts , we use a / because we already set the prefix
 @router.get("/posts", response_model=List[schema.Post])
 def GetPosts(db:Session = Depends(get_db), user:int = Depends(oAuth.getCurrentUser)):
-    data = db.query(models.Posts).filter(models.Posts.ownerID == user.id).all()
+    data = db.query(models.Posts).all()
     # print(user.email)
     return data
     

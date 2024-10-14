@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from .database import Base
@@ -14,6 +15,8 @@ class Posts(Base):
     created_at = Column(TIMESTAMP(timezone = True), nullable = True , server_default =  text('now()')) 
     ownerID = Column(Integer,ForeignKey('users.id', ondelete = "CASCADE"), nullable = False)
 
+    user = relationship("Users")
+    
 class Users(Base):
     __tablename__= 'users'
     
