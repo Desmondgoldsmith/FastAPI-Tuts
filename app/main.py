@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import psycopg
 from psycopg.rows import dict_row
-from .database import engine
+from .database import engine, DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT
 from . import models
 from .routers import posts,users,auth
 import time
