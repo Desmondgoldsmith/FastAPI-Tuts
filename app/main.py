@@ -16,11 +16,11 @@ connection_successful = False
 while not connection_successful:
     try:
         conn = psycopg.connect(
-            host='localhost',
-            dbname='FastAPI_DB',
-            user='postgres',
-            password='DessyAdmin',
-            port='5432',
+            host=DB_HOST,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            port=DB_PORT,
             row_factory=dict_row
         )
         cursor = conn.cursor()
