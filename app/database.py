@@ -4,7 +4,18 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = 'postgresql+psycopg://postgres:DessyAdmin@localhost/FastAPI_DB'
+# Load environment variables
+load_dotenv()
+
+# Get database connection details from environment variables
+DB_HOST = os.getenv("DB_HOST")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_PORT = os.getenv("DB_PORT")
+
+SQLALCHEMY_DATABASE_URL = f'postgresql+psycopg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+
 # establishes the postgres conn 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
