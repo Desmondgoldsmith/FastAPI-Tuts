@@ -13,9 +13,9 @@ class validatePosts(BaseModel):
         
 class UserSchema(BaseModel):
     email: EmailStr
-    # password: str
+    password: str
     
-class UsersResponse(UserSchema):
+class UsersResponse():
     id: int
     email: str
     created_at: datetime
