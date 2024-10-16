@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
-from pydantic.types import coint
+from pydantic.types import conint
 
 
 class validatePosts(BaseModel):
@@ -49,4 +49,4 @@ class TokenData(BaseModel):
     
 class VotesData(BaseModel):
     postId: int
-    action: coint(le = 1)
+    action: conint(le = 1)
