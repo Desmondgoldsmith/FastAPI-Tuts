@@ -13,7 +13,7 @@ class validatePosts(BaseModel):
         
 class UserSchema(BaseModel):
     email: EmailStr
-    password: str
+    # password: str
     
 class UsersResponse(UserSchema):
     id: int
