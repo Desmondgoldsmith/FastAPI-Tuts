@@ -15,7 +15,7 @@ class UserSchema(BaseModel):
     email: EmailStr
     password: str
     
-class UsersResponse():
+class UsersResponse(BaseModel):
     id: int
     email: str
     created_at: datetime
