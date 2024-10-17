@@ -12,7 +12,11 @@ router = APIRouter(
 
 @router.post('/')
 def addVotes(votes = schema.VotesData, db:Session = Depends('get_db'), current_user = Depends(oAuth.getCurrentUser)):
-    vote_query = db.query(models.Votes.postId).filter(models.Votes.postId == votes.postId, models.Votes.userId == current_user.userId)
+    post = db.query(models.Post).filter(models.Post.id == votes.postId).first()
+    if not post:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, details = "vote does not exist")
+
+    vote_query = db.query(models.Votes).filter(models.Votes.postId == votes.postId, models.Votes.userId == current_user.userId)
     found_vote_data = vote_query.first()
     
     if(votes.action == 1):
@@ -27,7 +31,7 @@ def addVotes(votes = schema.VotesData, db:Session = Depends('get_db'), current_u
             raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, details = "Cannot find vote!")
         vote_query.delete(synchronize_session = False)
         db.commit()
-                return {"message": "Vote deleted successfully"}
+        return {"message": "Vote deleted successfully"}
 
         
         
