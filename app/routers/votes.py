@@ -17,8 +17,11 @@ def addVotes(votes = schema.VotesData, db:Session = Depends('get_db'), current_u
     
     if(votes.action == 1):
         raise HTTPException(status_code = status.HTTP_409_CONFLICT, details = "you have already voted. ypu cannot vote again!")
-    else:
-        new_vote = models.Votes(postId == votes.postId, userId == current_user.userId)
-        db.add()
-        db.commit()
+    
+    new_vote = models.Votes(postId == votes.postId, userId == current_user.userId)
+    db.add()
+    db.commit()
     return {"message": "Vote added successfully"}
+    else:
+        if(votes.action == 0):
+            
