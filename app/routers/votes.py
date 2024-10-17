@@ -12,4 +12,11 @@ router = APIRouter(
 
 @router.post('/')
 def addVotes(votes = schema.VotesData, db:Session = Depends('get_db'), current_user = Depends(oAuth.getCurrentUser)):
+    vote_query = db.query(models.Votes.postId).filter(models.Votes.postId == votes.postId, models.Votes.userId == current_user.userId)
+    vote_data = vote_query.first()
+    
+    if(votes.action == 1):
+        raise HTTPException(status_code = status.HTTP_409_CONFLICT, details = "you have already voted. ypu cannot vote again!")
+    else:
+        
     return {"message": "Vote added successfully"}
