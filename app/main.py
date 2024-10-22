@@ -4,12 +4,21 @@ from psycopg.rows import dict_row
 from .database import engine, DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT
 from . import models
 from .routers import posts,users,auth,votes
+from fastapi.middleware.cors import CORSMiddleware
 import time
 
 # models.Base.metadata.create_all(bind=engine)
 
 
+
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins= ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
     
 connection_successful = False
 
