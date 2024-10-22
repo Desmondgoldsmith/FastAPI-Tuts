@@ -55,4 +55,4 @@ class TokenData(BaseModel):
     
 class VotesData(BaseModel):
     postId: int
-    action: conint(le:int = 1)
+    action: conint(le=1)
