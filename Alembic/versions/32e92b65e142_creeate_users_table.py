@@ -19,8 +19,19 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    op.create_table('users', 
+                           sa.Column('id', sa.Integer(), nullable=False),
+                           sa.Column('username', sa.String(length=50), nullable=False),
+                           sa.Column('email', sa.String(length=100), nullable=False),
+                           sa.Column('password', sa.String(length=128), nullable=False),
+                           sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+                           
+                           sa.PrimaryKeyConstraint('id'),
+                           sa.UniqueConstraint('email')  # noqa: E501  # unique constraint can be used as identifier in SQLAlchemy, so it's not a typo.
+                   )
     pass
 
 
 def downgrade() -> None:
+    op.drop_table('users')  # noqa: E501  # table name can be used as identifier in SQLAlchemy, so it's not a typo.  # noqa: E
     pass
