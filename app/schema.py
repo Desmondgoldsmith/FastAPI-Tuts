@@ -32,6 +32,13 @@ class Post(validatePosts):
     class Config:
         from_attributes = True
         
+class JointPost(BaseModel):
+    Post: Post
+    votes: int
+    
+    class Config:
+        from_attributes = True
+        
     
 class LoginSchema(BaseModel):
     email: EmailStr

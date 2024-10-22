@@ -4,6 +4,8 @@ from ..database import get_db
 from .. import models, schema, oAuth
 from typing import List
 
+from sqlalchemy import func
+
 
 
 router = APIRouter(
@@ -24,11 +26,14 @@ router = APIRouter(
 
 # ======== USING AN ORM TO GET ALL POSTS ===============
 # instead of making the route /posts , we use a / because we already set the prefix
-@router.get("/posts", response_model=List[schema.Post])
+@router.get("/posts", response_model=List[schema.JointPost])
 def GetPosts(db:Session = Depends(get_db), user:int = Depends(oAuth.getCurrentUser)):
     data = db.query(models.Posts).all()
+    
+    joint_data = db.query(models.Posts,func.count(models.Votes.postId).label("Votes")).join(models.Votes, models.Votes.postId == models.Posts.id, isOuter = True).order_by(models.Posts.id).all()
+    
     # print(user.email)
-    return data
+    return joint_data
     
     
 # create a post
