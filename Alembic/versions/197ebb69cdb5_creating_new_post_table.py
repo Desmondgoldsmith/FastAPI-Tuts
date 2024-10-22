@@ -1,8 +1,8 @@
-"""creating Post table
+"""creating new  Post table
 
-Revision ID: 5cf2f988417b
-Revises: 
-Create Date: 2024-10-22 02:09:02.067776
+Revision ID: 197ebb69cdb5
+Revises: 5cf2f988417b
+Create Date: 2024-10-22 02:57:14.574309
 
 """
 from typing import Sequence, Union
@@ -12,14 +12,14 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '5cf2f988417b'
-down_revision: Union[str, None] = None
+revision: str = '197ebb69cdb5'
+down_revision: Union[str, None] = '5cf2f988417b'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.create_table('posts', 
+     op.create_table('posts', 
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('title', sa.String(length=100), nullable=False),
                     sa.Column('content', sa.Text(), nullable=False),
@@ -30,9 +30,9 @@ def upgrade() -> None:
                     sa.PrimaryKeyConstraint('id'),
                     # sa.ForeignKeyConstraint(['ownerID'], ['users.id'], ondelete='CASCADE')
                     )
-    pass
+    
 
 
 def downgrade() -> None:
-    op.drop_table('Posts')  # noqa: E501  # table name can be used as identifier in SQLAlchemy, so it's not a typo.
+    op.drop_table('posts')  # noqa: E501  # table name can be used as identifier in SQLAlchemy, so it's not a typo.
     pass
